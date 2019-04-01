@@ -135,6 +135,17 @@
 			done(metaData);
 		}
 
+		function median(source /*: number[]*/) {
+			if (source.length === 0) return 0;
+			const values = source.slice().sort((a, b) => a - b);
+
+			const half = Math.floor(values.length / 2);
+
+			if (values.length % 2) return values[half];
+
+			return (values[half - 1] + values[half]) / 2.0;
+		}
+
 		function start(sample) {
 			var sandbox = document.getElementById("sandbox");
 			localStorage.clear();
@@ -154,16 +165,19 @@
 			});
 		}
 
-		function fill(sample, params) {
+		async function fill(sample, params) {
 			var adder = sandbox.contentDocument.querySelector(selector.adder);
 			var adderForm = sandbox.contentDocument.querySelector(selector.adderForm);
 			var i = 1;
-			var start = Date.now();
 
+			let results = [];
 			for (let j = 0; j < params.pass; j++) {
-				step();
+				var start = Date.now();
+				const ms = await new Promise(res => step(start, res));
+				results.push(ms);
 			}
-			function step() {
+			done(median(results) + " ms");
+			function step(start, done) {
 				adder.value = "Something to do " + i;
 				adder.dispatchEvent(new Event("input", { bubbles: true }));
 				adder.dispatchEvent(new Event("change", { bubbles: true }));
@@ -203,7 +217,7 @@
 					adderForm.dispatchEvent(event);
 				}
 
-				if (++i <= params.count) setImmediate(step);
+				if (++i <= params.count) setImmediate(() => step(start, done));
 				else {
 					sandbox.addEventListener("animationend", end);
 					requestAnimationFrame(function() {
@@ -222,17 +236,21 @@
 			}
 		}
 
-		function complete(sample, params) {
+		async function complete(sample, params) {
 			var completer = sandbox.contentDocument.querySelector(selector.completer);
 			var i = 1;
-			var start = Date.now();
+
+			let results = [];
 			for (let j = 0; j < params.pass; j++) {
-				step();
+				var start = Date.now();
+				const ms = await new Promise(res => step(start, res));
+				results.push(ms);
 			}
-			function step() {
+			done(median(results) + " ms");
+			function step(start, done) {
 				completer.click();
 
-				if (++i <= params.blinks) setImmediate(step);
+				if (++i <= params.blinks) setImmediate(() => step(start, done));
 				else {
 					sandbox.addEventListener("animationend", end);
 					requestAnimationFrame(function() {
@@ -243,7 +261,7 @@
 					});
 					function end() {
 						// wait for painting ends
-						done(Date.now() - start + " ms");
+						done(Date.now() - start);
 						sandbox.style.animation = "";
 						sandbox.removeEventListener("animationend", end);
 					}
@@ -251,14 +269,17 @@
 			}
 		}
 
-		function clear(sample, params) {
-			var start = Date.now();
+		async function clear(sample, params) {
 			var index = 0;
 
+			let results = [];
 			for (let j = 0; j < params.pass; j++) {
-				step();
+				var start = Date.now();
+				const ms = await new Promise(res => step(start, res));
+				results.push(ms);
 			}
-			function step() {
+			done(median(results) + " ms");
+			function step(start, done) {
 				var droppers = sandbox.contentDocument.querySelectorAll(
 					selector.dropper
 				);
@@ -285,7 +306,7 @@
 				dropper.dispatchEvent(new MouseEvent("mouseup", { bubbles: true }));
 				dropper.dispatchEvent(new MouseEvent("click", { bubbles: true }));
 
-				setImmediate(step);
+				setImmediate(() => step(start, done));
 			}
 		}
 

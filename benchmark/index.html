@@ -151,13 +151,13 @@
 			localStorage.clear();
 			sandbox.src = "about:blank";
 			setTimeout(function() {
-				var start = Date.now();
+				var start = performance.now();
 				sandbox.src = "../examples/" + sample + "/";
 				sandbox.onload = function() {
 					step();
 					function step() {
 						if (sandbox.contentDocument.querySelector(selector.adder))
-							done(Date.now() - start + " ms");
+							done(performance.now() - start + " ms");
 						else setTimeout(step, 10);
 					}
 					sandbox.onload = null;
@@ -172,7 +172,7 @@
 
 			let results = [];
 			for (let j = 0; j < params.pass; j++) {
-				var start = Date.now();
+				var start = performance.now();
 				const ms = await new Promise(res => step(start, res));
 				results.push(ms);
 			}
@@ -228,7 +228,7 @@
 					});
 					function end() {
 						// wait for painting ends
-						done(Date.now() - start);
+						done(performance.now() - start);
 						sandbox.style.animation = "";
 						sandbox.removeEventListener("animationend", end);
 					}
@@ -242,7 +242,7 @@
 
 			let results = [];
 			for (let j = 0; j < params.pass; j++) {
-				var start = Date.now();
+				var start = performance.now();
 				const ms = await new Promise(res => step(start, res));
 				results.push(ms);
 			}
@@ -261,7 +261,7 @@
 					});
 					function end() {
 						// wait for painting ends
-						done(Date.now() - start);
+						done(performance.now() - start);
 						sandbox.style.animation = "";
 						sandbox.removeEventListener("animationend", end);
 					}
@@ -274,7 +274,7 @@
 
 			let results = [];
 			for (let j = 0; j < params.pass; j++) {
-				var start = Date.now();
+				var start = performance.now();
 				const ms = await new Promise(res => step(start, res));
 				results.push(ms);
 			}
@@ -293,7 +293,7 @@
 					});
 					function end() {
 						// wait for painting ends
-						done(Date.now() - start);
+						done(performance.now() - start);
 						sandbox.style.animation = "";
 						sandbox.removeEventListener("animationend", end);
 					}

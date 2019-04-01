@@ -160,7 +160,7 @@
 				}
 				ns.push(median(results));
 			}
-			done(mean(ns) + " ms");
+			done(mean(ns).toFixed(2) + " ms");
 		}
 
 		function start(sample) {

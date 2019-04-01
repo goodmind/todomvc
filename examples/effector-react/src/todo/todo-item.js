@@ -30,7 +30,7 @@ export function TodoItem ({ todoModel }: Props) {
   });
 
   const trashClass = classNames({
-    trash: true,
+    destroy: true,
     restore: showTrashed,
   });
 

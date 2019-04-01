@@ -14,64 +14,72 @@ import type { TodoListModelType } from './model';
 const { useContext, useCallback } = React;
 
 // eslint-disable-next-line no-undef
-type InputEvent = SyntheticInputEvent<HTMLInputElement>
-type KeyboardEvent = { key: string, target: HTMLInputElement, preventDefault(): void }
+type InputEvent = SyntheticInputEvent<HTMLInputElement>;
+type KeyboardEvent = {
+	key: string,
+	target: HTMLInputElement,
+	preventDefault(): void
+};
 
 // $FlowFixMe: Context may be undefined
 export const TodoContext: React.Context<TodoListModelType> = React.createContext();
 
 type Props = {
-  className?: string
-}
+	className?: string
+};
 
-export function Todo (props: Props) {
-  const { className } = props;
-  const { addTodo, toggleAll } = useContext(TodoContext);
+export function Todo(props: Props) {
+	const { className } = props;
+	const { addTodo, toggleAll } = useContext(TodoContext);
 
-  const handleAdd = useCallback((event: KeyboardEvent) => {
-    if (event.key !== 'Enter') {
-      return;
-    }
-    event.preventDefault();
-    const input = event.target;
-    if (input.value) {
-      addTodo(input.value.trim());
-      input.value = '';
-    }
-  }, [addTodo]);
+	const handleAdd = useCallback(
+		(event: KeyboardEvent) => {
+			if (event.key !== 'Enter') {
+				return;
+			}
+			event.preventDefault();
+			const input = event.target;
+			if (input.value) {
+				addTodo(input.value.trim());
+				input.value = '';
+			}
+		},
+		[addTodo]
+	);
 
-  const handleToggleAll = useCallback((event: InputEvent) => {
-    const checkbox = event.target;
-    toggleAll(checkbox.checked);
-  }, [toggleAll]);
+	const handleToggleAll = useCallback(
+		(event: InputEvent) => {
+			const checkbox = event.target;
+			toggleAll(checkbox.checked);
+		},
+		[toggleAll]
+	);
 
-  return (
-    <section className={classNames('todoapp', className)}>
-      <div>
-        <header className="header">
-          <h1>todos</h1>
-          <input
-            className="new-todo"
-            placeholder="What needs to be done?"
-            onKeyDown={handleAdd}
-          />
-        </header>
-        <section className="main">
-          <input
-            type="checkbox"
-            className="toggle-all"
-            id="toggle-all"
-            onChange={handleToggleAll}
-          />
-          <label htmlFor="toggle-all" />
-          <TodoList />
-        </section>
-        <footer className="footer">
-          <TodoCount />
-          <TodoFilters />
-          <TodoTrash />
-        </footer>
-      </div>
-    </section>
-  );
+	return (
+		<div>
+			<header className="header">
+				<h1>todos</h1>
+				<input
+					className="new-todo"
+					placeholder="What needs to be done?"
+					onKeyDown={handleAdd}
+				/>
+			</header>
+			<section className="main">
+				<input
+					type="checkbox"
+					className="toggle-all"
+					id="toggle-all"
+					onChange={handleToggleAll}
+				/>
+				<label htmlFor="toggle-all" />
+				<TodoList />
+			</section>
+			<footer className="footer">
+				<TodoCount />
+				<TodoFilters />
+				<TodoTrash />
+			</footer>
+		</div>
+	);
 }

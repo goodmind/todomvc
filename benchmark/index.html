@@ -228,7 +228,7 @@
 					});
 					function end() {
 						// wait for painting ends
-						done(Date.now() - start + " ms");
+						done(Date.now() - start);
 						sandbox.style.animation = "";
 						sandbox.removeEventListener("animationend", end);
 					}
@@ -293,7 +293,7 @@
 					});
 					function end() {
 						// wait for painting ends
-						done(Date.now() - start + " ms");
+						done(Date.now() - start);
 						sandbox.style.animation = "";
 						sandbox.removeEventListener("animationend", end);
 					}

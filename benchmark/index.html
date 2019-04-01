@@ -146,6 +146,23 @@
 			return (values[half - 1] + values[half]) / 2.0;
 		}
 
+		const mean = (source /*: number[]*/) =>
+			source.reduce((a, b) => a + b, 0) / source.length;
+
+		async function measure(params, step) {
+			let ns = [];
+			for (let i = 0; i < params.pass; i++) {
+				let results = [];
+				for (let j = 0; j < params.pass; j++) {
+					var start = performance.now();
+					const ms = await new Promise(res => step(start, res));
+					results.push(ms);
+				}
+				ns.push(median(results));
+			}
+			done(mean(ns) + " ms");
+		}
+
 		function start(sample) {
 			var sandbox = document.getElementById("sandbox");
 			localStorage.clear();
@@ -170,13 +187,7 @@
 			var adderForm = sandbox.contentDocument.querySelector(selector.adderForm);
 			var i = 1;
 
-			let results = [];
-			for (let j = 0; j < params.pass; j++) {
-				var start = performance.now();
-				const ms = await new Promise(res => step(start, res));
-				results.push(ms);
-			}
-			done(median(results) + " ms");
+			measure(params, step);
 			function step(start, done) {
 				adder.value = "Something to do " + i;
 				adder.dispatchEvent(new Event("input", { bubbles: true }));
@@ -240,13 +251,7 @@
 			var completer = sandbox.contentDocument.querySelector(selector.completer);
 			var i = 1;
 
-			let results = [];
-			for (let j = 0; j < params.pass; j++) {
-				var start = performance.now();
-				const ms = await new Promise(res => step(start, res));
-				results.push(ms);
-			}
-			done(median(results) + " ms");
+			measure(params, step);
 			function step(start, done) {
 				completer.click();
 
@@ -272,13 +277,7 @@
 		async function clear(sample, params) {
 			var index = 0;
 
-			let results = [];
-			for (let j = 0; j < params.pass; j++) {
-				var start = performance.now();
-				const ms = await new Promise(res => step(start, res));
-				results.push(ms);
-			}
-			done(median(results) + " ms");
+			measure(params, step);
 			function step(start, done) {
 				var droppers = sandbox.contentDocument.querySelectorAll(
 					selector.dropper
